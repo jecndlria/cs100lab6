@@ -1,0 +1,9 @@
+bin
+CMakeFiles
+googletest
+lib
+lib/libgtest.a
+test
+Makefile
+CMakeCache.txt
+cmake_install.cmake
