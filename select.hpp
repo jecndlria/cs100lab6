@@ -26,7 +26,7 @@ class Select_Column: public Select
 protected:
 public:
     int column;
-    Select_Column() : column(0) {};
+    Select_Column() : column(-1) {};
     Select_Column(const Spreadsheet* sheet, const std::string& name)
     {
         column = sheet->get_column_by_name(name);
@@ -88,14 +88,14 @@ public:
     };
 };
 
-class Select_And : public Select_Column
+class Select_And : public Select
 {
 protected:
-    Select_Column* targetSelections[2];
+    Select* targetSelections[2];
 public:
     Select_And();
     ~Select_And() {delete targetSelections[0]; delete targetSelections[1];}
-    Select_And(Select_Column* targetSelection1, Select_Column* targetSelection2) 
+    Select_And(Select* targetSelection1, Select* targetSelection2) 
     {
         targetSelections[0] = targetSelection1;
         targetSelections[1] = targetSelection2;
@@ -103,24 +103,23 @@ public:
 
     virtual bool select(const Spreadsheet* sheet, int row) const
     {
-        return targetSelections[0]->select(sheet->cell_data(row, targetSelections[0]->column)) && targetSelections[1]->select(sheet->cell_data(row, targetSelections[1]->column));
+        if (targetSelections[0]->select(sheet, row)) {
+            if (targetSelections[1]->select(sheet, row)) {
+                return true;
+            }
+        }
+        return false;
     }
-
-    // Derived classes can instead implement this simpler interface.
-    virtual bool select(const std::string& s) const 
-    {
-        return targetSelections[0]->select(s) && targetSelections[1]->select(s);
-    };
 };
 
-class Select_Or : public Select_Column
+class Select_Or : public Select
 {
 protected:
-    Select_Column* targetSelections[2];
+    Select* targetSelections[2];
 public:
     Select_Or();
     ~Select_Or() {delete targetSelections[0]; delete targetSelections[1];}
-    Select_Or(Select_Column* targetSelection1, Select_Column* targetSelection2)
+    Select_Or(Select* targetSelection1, Select* targetSelection2) 
     {
         targetSelections[0] = targetSelection1;
         targetSelections[1] = targetSelection2;
@@ -128,13 +127,13 @@ public:
 
     virtual bool select(const Spreadsheet* sheet, int row) const
     {
-        return targetSelections[0]->select(sheet->cell_data(row, targetSelections[0]->column)) || targetSelections[1]->select(sheet->cell_data(row, targetSelections[1]->column));
+        if (targetSelections[0]->select(sheet, row)) {
+            return true;
+        }
+        if (targetSelections[1]->select(sheet, row)) {
+            return true;
+        }
+        return false;
     }
-
-    // Derived classes can instead implement this simpler interface.
-    virtual bool select(const std::string& s) const 
-    {
-        return targetSelections[0]->select(s) || targetSelections[1]->select(s);
-    };
 };
 #endif //__SELECT_HPP__
