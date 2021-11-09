@@ -76,17 +76,16 @@ public:
     Select_Not() : Select_Column(), targetSelection(targetSelection) {}
     Select_Not(Select_Column* targetSelection) : targetSelection(targetSelection) {}
     ~Select_Not() {delete targetSelection;};
-
     virtual bool select(const Spreadsheet* sheet, int row) const
     {
-        return this->select(sheet->cell_data(row, column));
+        return select(sheet->cell_data(row, targetSelection->column));
     }
 
     // Derived classes can instead implement this simpler interface.
     virtual bool select(const std::string& s) const 
     {
-        return targetSelection->select(s);
-    }
+        return !targetSelection->select(s);
+    };
 };
 
 class Select_And : public Select_Column
