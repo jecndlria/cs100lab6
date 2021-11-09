@@ -100,12 +100,18 @@ public:
 
     virtual bool select(const Spreadsheet* sheet, int row) const
     {
-        return select(sheet->cell_data(row, column));
+        return select(sheet->cell_data(row, targetSelection1->column), targetSelection1) && select(sheet->cell_data(row, targetSelection2->column), targetSelection2);
     }
 
     // Derived classes can instead implement this simpler interface.
-    virtual bool select(const std::string& s) const {
-        return (targetSelection1->select(s)) && (targetSelection2->select(s));
+    virtual bool select(const std::string& s, Select_Column* selectTarget) const {
+        return selectTarget->select(s);
     }
+
+    // Derived classes can instead implement this simpler interface.
+    virtual bool select(const std::string& s) const 
+    {
+        return true; 
+    };
 };
 #endif //__SELECT_HPP__
