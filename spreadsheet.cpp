@@ -36,23 +36,33 @@ void Spreadsheet::add_row(const std::vector<std::string>& row_data)
 int Spreadsheet::get_column_by_name(const std::string& name) const
 {
     for(int i=0; i<column_names.size(); i++)
+    {
+
         if(column_names.at(i) == name)
+        {
             return i;
+        }
+    }
     return -1;
 }
 
 void Spreadsheet::print_selection(std::ostream& out) const
 {
-    if (!select) 
+    bool print_whole = false;
+    if (select == nullptr) {
+        print_whole = true;
+    }
+    
+    for (unsigned i = 0; i < data.size(); i++)
     {
-        for (unsigned i = 0; i < data.size(); i++)
+        if (print_whole || select->select(this, i)) 
         {
             for (unsigned j = 0; j < data.at(i).size(); j++)
             {
                 out << data.at(i).at(j) << ' ';
             }
             out << std::endl;
-        }
+        } 
     }
 }
 

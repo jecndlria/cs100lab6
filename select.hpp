@@ -2,6 +2,8 @@
 #define __SELECT_HPP__
 
 #include <cstring>
+#include <string> 
+#include <iostream>
 
 class Select
 {
@@ -22,8 +24,9 @@ public:
 class Select_Column: public Select
 {
 protected:
-    int column;
 public:
+    int column;
+    Select_Column() : column(0) {};
     Select_Column(const Spreadsheet* sheet, const std::string& name)
     {
         column = sheet->get_column_by_name(name);
@@ -38,4 +41,72 @@ public:
     virtual bool select(const std::string& s) const = 0;
 };
 
+class Select_Contains : public Select_Column
+{
+protected:
+    std::string target; 
+public:
+    Select_Contains() : target("") {};
+    Select_Contains(Spreadsheet* sheet, std::string column, std::string target) : Select_Column(sheet, column), target(target) {}
+
+    virtual bool select(const Spreadsheet* sheet, int row) const
+    {
+        return select(sheet->cell_data(row, column));
+    }
+
+    // Derived classes can instead implement this simpler interface.
+    virtual bool select(const std::string& s) const {
+        if (s.find(target) != std::string::npos)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        return false;
+    };
+};
+
+class Select_Not : public Select_Column
+{
+protected:
+    Select_Column* targetSelection;
+public:
+    Select_Not() : Select_Column(), targetSelection(targetSelection) {}
+    Select_Not(Select_Column* targetSelection) : targetSelection(targetSelection) {}
+    ~Select_Not() {delete targetSelection;};
+
+    virtual bool select(const Spreadsheet* sheet, int row) const
+    {
+        return this->select(sheet->cell_data(row, column));
+    }
+
+    // Derived classes can instead implement this simpler interface.
+    virtual bool select(const std::string& s) const 
+    {
+        return targetSelection->select(s);
+    }
+};
+
+class Select_And : public Select_Column
+{
+protected:
+    Select_Column* targetSelection1;
+    Select_Column* targetSelection2;
+public:
+    Select_And();
+    ~Select_And() {delete targetSelection1; delete targetSelection2;}
+    Select_And(Select_Column* targetSelection1, Select_Column* targetSelection2) : targetSelection1(targetSelection1), targetSelection2(targetSelection2) {}
+
+    virtual bool select(const Spreadsheet* sheet, int row) const
+    {
+        return select(sheet->cell_data(row, column));
+    }
+
+    // Derived classes can instead implement this simpler interface.
+    virtual bool select(const std::string& s) const {
+        return (targetSelection1->select(s)) && (targetSelection2->select(s));
+    }
+};
 #endif //__SELECT_HPP__
