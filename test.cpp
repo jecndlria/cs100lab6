@@ -43,14 +43,14 @@ TEST_F(EmptySpreadsheet, NotContaintsTest) {
   ASSERT_EQ(ss.str(), "");
 }
 
-TEST_F(EmptySpreadsheet, SelectContainsTest) {
-  sheet.set_selection(new Select_Contains(&sheet,"Last","Dole"));
+TEST_F(EmptySpreadsheet, AndContainsTest) {
+  sheet.set_selection(new Select_And(new Select_Contains(&sheet,"Last","Dole"),new Select_Contains(&sheet,"Last","Dole")));
   sheet.print_selection(ss);
   ASSERT_EQ(ss.str(), "");
 }
 
-TEST_F(EmptySpreadsheet, NotContaintsTest) {
-  sheet.set_selection(new Select_Not(new Select_Contains(&sheet,"Last","Dole")));
+TEST_F(EmptySpreadsheet, OrContainsTest) {
+  sheet.set_selection(new Select_Or(new Select_Contains(&sheet,"Last","Dole"),new Select_Contains(&sheet,"Last","Dole")));
   sheet.print_selection(ss);
   ASSERT_EQ(ss.str(), "");
 }
