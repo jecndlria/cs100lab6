@@ -46,8 +46,7 @@ class Select_Contains : public Select_Column
 protected:
     std::string target; 
 public:
-    Select_Contains() : target("") {};
-    Select_Contains(Spreadsheet* sheet, std::string column, std::string target) : Select_Column(sheet, column), target(target) {}
+     Select_Contains(Spreadsheet* sheet, std::string column, std::string target) : Select_Column(sheet, column), target(target) {}
 
     virtual bool select(const Spreadsheet* sheet, int row) const
     {
