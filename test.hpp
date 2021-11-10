@@ -34,16 +34,16 @@ TEST_F(PopulatedSpreadsheet, HasStuff) {
                  new Select_Contains(&sheet,"Age","9"))));
 
     sheet.print_selection(ss);
-    ASSERT_EQ(ss.str(), "Amanda Andrews 22 business\nCarol Conners 21 computer science\nJoe Jackson 21 mathematics\nGeorge Genius 9 astrophysics");
+    ASSERT_EQ(ss.str(), "Amanda Andrews 22 business\nCarol Conners 21 computer science\nJoe Jackson 21 mathematics\nGeorge Genius 9 astrophysics \n");
 }
 
 TEST_F(PopulatedSpreadsheet, EmptyTargetTest) {
     sheet.set_selection(new Select_Contains(&sheet, "First", ""));
     sheet.print_selection(ss);
-    ASSERT_EQ(ss.str(), "");
+    ASSERT_EQ(ss.str(), "Amanda Andrews 22 business\nBrian Becker 21 computer science\nCarol Conners 21 computer science\nJoe Jackson 21 mathematics\nSarah Summers 21 computer science\nDiane Dole 20 computer engineering\nDavid Dole 22 electrical engineering\nDominick Dole 22 communications\nGeorge Genius 9 astrophysics \n");
 }
 
 TEST_F(PopulatedSpreadsheet, OutputAll) {
     sheet.print_selection(ss);
-    ASSERT_EQ(ss.str(), "Amanda Andrews 22 business\nBrian Becker 21 computer science\nCarol Conners 21 computer science\nJoe Jackson 21 mathematics\nSarah Summers 21 computer science\nDiane Dole 20 computer engineering\nDavid Dole 22 electrical engineering\nDominick Dole 22 communications\nGeorge Genius 9 astrophysics");
+    ASSERT_EQ(ss.str(), "Amanda Andrews 22 business\nBrian Becker 21 computer science\nCarol Conners 21 computer science\nJoe Jackson 21 mathematics\nSarah Summers 21 computer science\nDiane Dole 20 computer engineering\nDavid Dole 22 electrical engineering\nDominick Dole 22 communications\nGeorge Genius 9 astrophysics \n");
 }
